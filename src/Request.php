@@ -39,7 +39,7 @@ abstract class Request
      * @param string $uri
      * @param null $body
      * @return array|null
-     * @throws \JsonException
+     * @throws \JsonException|GuzzleException
      */
     public function request(string $method, string $uri, $body = null): ?array
     {
@@ -50,11 +50,7 @@ abstract class Request
             'body' => $body
         ];
 
-        try {
             $response = $this->instance->request($method, $uri, $options);
             return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (GuzzleException $e) {
-            return null;
-        }
     }
 }
