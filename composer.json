@@ -1,0 +1,20 @@
+{
+  "name": "uwebpro/scrapoxy-api",
+  "description": "PHP API Container for Scrapoxy Commander",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "willpercey",
+      "email": "info@uwebpro.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "UWebPro\\Scrapoxy\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.3",
+    "guzzlehttp/guzzle": "^6.3"
+  }
+}
