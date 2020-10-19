@@ -5,6 +5,8 @@ namespace UWebPro\Scrapoxy;
 
 class Container extends Request
 {
+    public $required = 0;
+
 
     public function awaitLive(): self
     {
@@ -14,7 +16,7 @@ class Container extends Request
          * @var Instance $instance ;
          */
 
-        while (count($alives) !== count($instances)) {
+        while (count($alives) !== count($instances) && count($instances) === $this->required) {
             $instances = $this->getInstances();
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
@@ -61,8 +63,9 @@ class Container extends Request
      * @return array|null
      * @throws \JsonException
      */
-    public function rescale($min, $required, $max): ?array
+    public function rescale(int $min, int $required, int $max): ?array
     {
+        $this->required = $required;
         return $this->request(
             'PATCH',
             '/api/scaling',
