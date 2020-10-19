@@ -3,6 +3,8 @@
 namespace UWebPro\Scrapoxy;
 
 
+use GuzzleHttp\Exception\GuzzleException;
+
 class Container extends Request
 {
     public $required = 0;
@@ -30,11 +32,15 @@ class Container extends Request
 
     /**
      * @return array|null
-     * @throws \JsonException
+     * @throws GuzzleException
      */
     public function getInstances(): ?array
     {
-        $instances = $this->request('GET', '/api/instances');
+        try {
+            $instances = $this->request('GET', '/api/instances');
+        } catch (\JsonException $e) {
+            $instances = [];
+        }
         $namespacedInstances = [];
         foreach ($instances as $instance) {
             $namespacedInstances[] = new Instance($instance, $this);
