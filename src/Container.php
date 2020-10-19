@@ -49,7 +49,7 @@ class Container extends Request
         return $this->request(
             'post',
             '/api/instances/stop',
-            json_encode(compact($name), JSON_THROW_ON_ERROR)
+            json_encode(['name' => $name], JSON_THROW_ON_ERROR)
         );
     }
 
@@ -65,7 +65,7 @@ class Container extends Request
         return $this->request(
             'patch',
             '/api/scaling',
-            json_encode(compact($min, $required, $max), JSON_THROW_ON_ERROR));
+            json_encode(['min' => $min, 'required' => $required, 'max' => $max], JSON_THROW_ON_ERROR));
     }
 
 }
