@@ -11,7 +11,12 @@ class Container extends Request
      */
     public function getInstances(): ?array
     {
-        return $this->request('get', '/api/instances');
+        $instances = $this->request('get', '/api/instances');
+        $namespacedInstances = [];
+        foreach ($instances as $instance) {
+            $namespacedInstances[] = new Instance($instance, $this);
+        }
+        return $namespacedInstances;
     }
 
     /**

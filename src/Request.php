@@ -21,10 +21,11 @@ abstract class Request
 
     /**
      * Request constructor.
-     * @param $settings
+     * @param string $host
+     * @param string $settings
      * @throws \JsonException
      */
-    public function __construct($host, $settings)
+    public function __construct(string $settings = '/conf.json', string $host = 'http://127.0.0.1:8889')
     {
         $this->instance = (new Client(['base_uri' => $host]));
         $this->settings = json_decode(@file_get_contents($settings), true, 512, JSON_THROW_ON_ERROR);
@@ -50,7 +51,7 @@ abstract class Request
             'body' => $body
         ];
 
-            $response = $this->instance->request($method, $uri, $options);
-            return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $response = $this->instance->request($method, $uri, $options);
+        return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
     }
 }
