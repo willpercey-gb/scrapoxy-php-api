@@ -6,7 +6,6 @@ namespace UWebPro\Scrapoxy;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Psr\Http\Message\ResponseInterface;
 
 abstract class Request
 {
@@ -48,7 +47,7 @@ abstract class Request
             'headers' => [
                 'Authorization' => base64_encode($this->settings['commander']['password']),
             ],
-            'body' => $body
+            'json' => $body
         ];
 
         $response = $this->instance->request($method, $uri, $options);

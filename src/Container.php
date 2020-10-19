@@ -15,9 +15,10 @@ class Container extends Request
          */
 
         while (count($alives) !== count($instances)) {
+            $instances = $this->getInstances();
             foreach ($instances as $instance) {
-                if ($instance->alive) {
-                    $alives[] = $instance;
+                if ($instance->alive && !in_array($instance->name, $alives)) {
+                    $alives[] = $instance->name;
                 }
             }
             sleep(2);
@@ -31,7 +32,7 @@ class Container extends Request
      */
     public function getInstances(): ?array
     {
-        $instances = $this->request('get', '/api/instances');
+        $instances = $this->request('GET', '/api/instances');
         $namespacedInstances = [];
         foreach ($instances as $instance) {
             $namespacedInstances[] = new Instance($instance, $this);
@@ -47,9 +48,9 @@ class Container extends Request
     public function removeInstance($name = '*********'): ?array
     {
         return $this->request(
-            'post',
+            'POST',
             '/api/instances/stop',
-            json_encode(['name' => $name], JSON_THROW_ON_ERROR)
+            ['name' => $name]
         );
     }
 
@@ -63,9 +64,14 @@ class Container extends Request
     public function rescale($min, $required, $max): ?array
     {
         return $this->request(
-            'patch',
+            'PATCH',
             '/api/scaling',
-            json_encode(['min' => $min, 'required' => $required, 'max' => $max], JSON_THROW_ON_ERROR));
+            [
+                'min' => $min,
+                'required' => $required,
+                'max' => $max
+            ]
+        );
     }
 
 }
