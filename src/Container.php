@@ -5,6 +5,26 @@ namespace UWebPro\Scrapoxy;
 
 class Container extends Request
 {
+
+    public function awaitLive(): self
+    {
+        $instances = $this->getInstances();
+        $alives = [];
+        /**
+         * @var Instance $instance ;
+         */
+
+        while (count($alives) !== count($instances)) {
+            foreach ($instances as $instance) {
+                if ($instance->alive) {
+                    $alives[] = $instance;
+                }
+            }
+            sleep(2);
+        }
+        return $this;
+    }
+
     /**
      * @return array|null
      * @throws \JsonException
