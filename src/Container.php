@@ -10,7 +10,7 @@ class Container extends Request
     public $required = 0;
 
 
-    public function awaitLive($debug = false): self
+    public function awaitLive(?\Closure $callback = null): self
     {
         $instances = $this->getInstances();
         $alives = [];
@@ -26,10 +26,8 @@ class Container extends Request
                     $alives[] = $instance->name;
                 }
             }
-            if ($debug) {
-                echo 'Alive: ' . count($alives) . PHP_EOL;
-                echo 'Exist: ' . count($instances) . PHP_EOL;
-                echo 'Required: ' . $this->required . PHP_EOL;
+            if ($callback) {
+                $callback($alives, $instances, $this->required);
             }
             sleep(2);
         }
