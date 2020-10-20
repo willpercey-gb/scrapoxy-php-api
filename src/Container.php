@@ -10,7 +10,7 @@ class Container extends Request
     public $required = 0;
 
 
-    public function awaitLive(): self
+    public function awaitLive($debug = false): self
     {
         $instances = $this->getInstances();
         $alives = [];
@@ -20,10 +20,16 @@ class Container extends Request
 
         while (count($alives) !== count($instances) || count($instances) !== $this->required) {
             $instances = $this->getInstances();
+            $alives = [];
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
                     $alives[] = $instance->name;
                 }
+            }
+            if ($debug) {
+                echo 'Alive: ' . count($alives) . PHP_EOL;
+                echo 'Exist: ' . count($instances) . PHP_EOL;
+                echo 'Required: ' . $this->required . PHP_EOL;
             }
             sleep(2);
         }
