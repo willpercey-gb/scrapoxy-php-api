@@ -12,13 +12,12 @@ class Container extends Request
 
     public function awaitLive(?\Closure $callback = null): self
     {
-        $instances = $this->getInstances();
         $alives = [];
         /**
          * @var Instance $instance ;
          */
 
-        while (count($alives) !== count($instances) || count($instances) !== $this->required) {
+        while (count($alives) !== $this->required) {
             $instances = $this->getInstances();
             $alives = [];
             foreach ($instances as $instance) {
