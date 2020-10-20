@@ -51,6 +51,13 @@ abstract class Request
         ];
 
         $response = $this->instance->request($method, $uri, $options);
-        return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        try {
+            return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            if (empty($response->getBody()->getContents())) {
+                return [];
+            }
+            return ['error' => $e->getMessage(), 'response' => $response->getBody()->getContents()];
+        }
     }
 }
