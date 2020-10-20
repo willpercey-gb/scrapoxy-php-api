@@ -18,7 +18,7 @@ class Container extends Request
          * @var Instance $instance ;
          */
 
-        while (count($alives) !== count($instances) && count($instances) === $this->required) {
+        while (count($alives) !== count($instances) && count($instances) !== $this->required) {
             $instances = $this->getInstances();
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
