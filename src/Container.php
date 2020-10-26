@@ -7,19 +7,32 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Container extends Request
 {
+    public $min = 0;
     public $required = 0;
+    public $max = 0;
 
 
+    /**
+     * @param \Closure|null $callback
+     * @return $this
+     * @throws GuzzleException
+     * @throws \JsonException
+     *
+     * @note Don't use this outside CLI
+     */
     public function awaitLive(?\Closure $callback = null): self
     {
         $alives = [];
         /**
          * @var Instance $instance ;
          */
-
+        $seconds = 0;
         while (count($alives) !== $this->required) {
             $instances = $this->getInstances();
             $alives = [];
+            if ($seconds > 30 && $this->required && $this->max) {
+                $this->rescale($this->min, $this->required, $this->max);
+            }
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
                     $alives[] = $instance->name;
@@ -28,6 +41,7 @@ class Container extends Request
             if ($callback) {
                 $callback($alives, $instances, $this->required);
             }
+            $seconds += 2;
             sleep(2);
         }
         return $this;
@@ -74,7 +88,10 @@ class Container extends Request
      */
     public function rescale(int $min, int $required, int $max): ?array
     {
+        $this->min = $min;
         $this->required = $required;
+        $this->max = $max;
+
         return $this->request(
             'PATCH',
             '/api/scaling',
@@ -84,6 +101,37 @@ class Container extends Request
                 'max' => $max
             ]
         );
+    }
+
+    public function start($min = null, $required = null, $max = null)
+    {
+        return $this->rescale(
+            $min ?? $this->min,
+            $required ?? $this->required,
+            $max ?? $this->max
+        );
+    }
+
+    public function stop()
+    {
+        $min = $this->min;
+        $required = $this->required;
+        $max = $this->max;
+        $r = $this->rescale(0, 0, 0);
+        $this->min = $min;
+        $this->required = $required;
+        $this->max = $max;
+        return $r;
+    }
+
+    public function getConfig()
+    {
+        return $this->request('GET', 'http://localhost:8889/api/config');
+    }
+
+    public function updateConfig($config = [])
+    {
+        return $this->request('PATCH', 'http://localhost:8889/api/config', $config);
     }
 
 }
