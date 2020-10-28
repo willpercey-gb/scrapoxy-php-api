@@ -32,6 +32,7 @@ class Container extends Request
             $alives = [];
             if ($seconds > 30 && $this->required && $this->max) {
                 $this->rescale($this->min, $this->required, $this->max);
+                $seconds = 0;
             }
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
