@@ -7,9 +7,9 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Container extends Request
 {
-    public $min = 0;
-    public $required = 0;
-    public $max = 0;
+    public int $min = 0;
+    public int $required = 0;
+    public int $max = 0;
 
 
     /**
@@ -127,12 +127,12 @@ class Container extends Request
 
     public function getConfig()
     {
-        return $this->request('GET', 'http://localhost:8889/api/config');
+        return $this->request('GET', '/api/config');
     }
 
     public function updateConfig($config = [])
     {
-        return $this->request('PATCH', 'http://localhost:8889/api/config', $config);
+        return $this->request('PATCH', '/api/config', $config);
     }
 
 }
