@@ -27,7 +27,7 @@ class Container extends Request
          * @var Instance $instance ;
          */
         $seconds = 0;
-        while (count($alives) !== $this->required) {
+        while (!(count($alives) >= $this->required)) {
             $instances = $this->getInstances();
             $alives = [];
             if ($seconds > 30 && $this->required && $this->max) {
