@@ -9,48 +9,22 @@ namespace UWebPro\Scrapoxy;
  */
 class Instance
 {
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var string
-     */
-    public $type;
-    /**
-     * @var string
-     */
-    public $status;
-    /**
-     * @var array
-     */
-    public $address;
-    /**
-     * @var string
-     */
-    public $region;
-    /**
-     * @var boolean
-     */
-    public $alive;
-    /**
-     * @var string
-     */
-    public $useragent;
-
-    /**
-     * @var Container
-     */
-    private $container;
+    public string $name;
+    public string $type;
+    public string $status;
+    public array $address;
+    public string $region;
+    public bool $alive;
+    public string $useragent;
+    private Container $container;
 
 
     public function __construct(array $instance, Container $container)
     {
         $this->container = $container;
-        foreach ($instance as $key => $value) {
+        array_walk($instance, function ($value, $key) {
             $this->$key = $value;
-        }
-
+        });
     }
 
     /**

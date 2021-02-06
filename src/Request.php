@@ -9,10 +9,8 @@ use GuzzleHttp\Exception\GuzzleException;
 
 abstract class Request
 {
-    /**
-     * @var Client
-     */
-    private $instance;
+    private Client $instance;
+
     /**
      * @var mixed
      */

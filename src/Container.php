@@ -7,9 +7,9 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Container extends Request
 {
-    public $min = 0;
-    public $required = 0;
-    public $max = 0;
+    public int $min = 0;
+    public int $required = 0;
+    public int $max = 0;
 
 
     /**
@@ -22,18 +22,20 @@ class Container extends Request
      */
     public function awaitLive(?\Closure $callback = null): self
     {
-        $alives = [];
-        /**
-         * @var Instance $instance ;
-         */
         $seconds = 0;
-        while (!(count($alives) >= $this->required)) {
+        do {
+            if ($seconds > 0) {
+                sleep(2);
+            }
+            $seconds += 2;
+
             $instances = $this->getInstances();
             $alives = [];
             if ($seconds > 30 && $this->required && $this->max) {
                 $this->rescale($this->min, $this->required, $this->max);
                 $seconds = 0;
             }
+            /** @var Instance $instance */
             foreach ($instances as $instance) {
                 if ($instance->alive && !in_array($instance->name, $alives)) {
                     $alives[] = $instance->name;
@@ -42,9 +44,8 @@ class Container extends Request
             if ($callback) {
                 $callback($alives, $instances, $this->required);
             }
-            $seconds += 2;
-            sleep(2);
-        }
+        } while (!(count($alives) >= $this->required));
+
         return $this;
     }
 
@@ -59,11 +60,11 @@ class Container extends Request
         } catch (\JsonException $e) {
             $instances = [];
         }
-        $namespacedInstances = [];
-        foreach ($instances as $instance) {
-            $namespacedInstances[] = new Instance($instance, $this);
-        }
-        return $namespacedInstances;
+        $instances = array_map(function ($instance) {
+            return new Instance($instance, $this);
+        }, $instances);
+
+        return $instances;
     }
 
     /**
@@ -127,12 +128,12 @@ class Container extends Request
 
     public function getConfig()
     {
-        return $this->request('GET', 'http://localhost:8889/api/config');
+        return $this->request('GET', '/api/config');
     }
 
     public function updateConfig($config = [])
     {
-        return $this->request('PATCH', 'http://localhost:8889/api/config', $config);
+        return $this->request('PATCH', '/api/config', $config);
     }
 
 }
