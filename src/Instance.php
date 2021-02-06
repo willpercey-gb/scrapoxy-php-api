@@ -22,10 +22,9 @@ class Instance
     public function __construct(array $instance, Container $container)
     {
         $this->container = $container;
-        foreach ($instance as $key => $value) {
+        array_walk($instance, function ($value, $key) {
             $this->$key = $value;
-        }
-
+        });
     }
 
     /**
