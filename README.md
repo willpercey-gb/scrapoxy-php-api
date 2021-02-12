@@ -1,5 +1,3 @@
-# Scrapoxy PHP API Documentation
-
 <h1 align="center">Scrapoxy Controller</h1>
 
 <p align="center">
