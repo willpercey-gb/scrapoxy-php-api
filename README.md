@@ -1,7 +1,7 @@
 <h1 align="center">Scrapoxy Controller</h1>
 
 <p align="center">
-This package interacts with the API from scrapoxy via a straightforward interface
+This package interacts with the API from scrapoxy via a straight-forward interface
 </p>
 
 
