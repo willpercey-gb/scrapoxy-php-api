@@ -44,7 +44,9 @@ class Container extends Request
             if ($callback) {
                 $callback($alives, $instances, $this->required);
             }
-        } while (!(count($alives) >= $this->required));
+
+            //TODO Resolve inefficient loop
+        } while (count($alives) < $this->required);
 
         return $this;
     }
@@ -72,7 +74,7 @@ class Container extends Request
      * @return array|null
      * @throws \JsonException
      */
-    public function removeInstance($name = '*********'): ?array
+    public function removeInstance(string $name = '*********'): ?array
     {
         return $this->request(
             'POST',
@@ -126,12 +128,12 @@ class Container extends Request
         return $r;
     }
 
-    public function getConfig()
+    public function getConfig(): ?array
     {
         return $this->request('GET', '/api/config');
     }
 
-    public function updateConfig($config = [])
+    public function updateConfig($config = []): ?array
     {
         return $this->request('PATCH', '/api/config', $config);
     }
